@@ -17,5 +17,6 @@ public class Category {
 
     @NotBlank(message = "O nome da categoria é obrigatório")
     @Column(nullable = false)
+    
     private String name;
 }
