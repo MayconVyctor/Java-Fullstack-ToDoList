@@ -15,7 +15,7 @@ import com.projetoTodolist.service.TaskService;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 
 public class TaskController {
     

@@ -28,7 +28,7 @@ function App() {
             <div key={task.id} className="list-group-item d-flex justify-content-between align-items-center">
               <div>
                 <h5 className="mb-1">{task.title}</h5>
-                <small className="text-muted">{task.status}</small>
+                <small className="text-muted">{task.status? task.status : "Nenhum status definido"}</small>
               </div>
               <span className="badge bg-primary rounded-pill">ID: {task.category.name}</span>
             </div>
