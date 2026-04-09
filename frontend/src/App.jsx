@@ -18,26 +18,29 @@ function App() {
   };
 
   return (
-    <div className="Container mt-5">
-      <h1 className= "text-center mb-4 ">To-Do List (React + Spring)</h1>
-
-      <div className="list-group">
-        {/* 4. O .map() percorre a lista de tarefas e cria um item HTML para cada uma */}
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <div key={task.id} className="list-group-item d-flex justify-content-between align-items-center">
+    <div>
+      {tasks.length > 0 ? (
+        tasks.map((task) => (
+          <div key={task.id} className="card border-0 shadow-sm mb-3">
+            <div className="card-body d-flex justify-content-between align-items-center">
               <div>
-                <h5 className="mb-1">{task.title}</h5>
-                <small className="text-muted">{task.status? task.status : "Nenhum status definido"}</small>
+                <h6 className="fw-bold mb-1">{task.title}</h6>
+                <span className="badge rounded-pill bg-primary me-2">
+                   {task.category?.name || "Sem Categoria"}
+                </span>
+                <span className="text-muted small">{task.status || "Pendente"}</span>
               </div>
-              <span className="badge bg-primary rounded-pill">ID: {task.category.name}</span>
+              <div className="actions">
+                 <button className="btn btn-sm btn-outline-success me-2">✓</button>
+                 <button className="btn btn-sm btn-outline-danger">✕</button>
+              </div>
             </div>
-          ))
-        ) : (
-          <p className="text-center">Nenhuma Tarefa encontrada no banco, Adicione algo via Adminer.</p>
-        )}
-      </div>
-            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center">Nenhuma Tarefa encontrada no banco, Adicione algo via Adminer.</p>
+      )}
+    </div>
   );
 }
 
