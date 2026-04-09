@@ -20,8 +20,9 @@ function App() {
   return (
     <div>
       {tasks.length > 0 ? (
-        tasks.map((task) => (
-          <div key={task.id} className="card border-0 shadow-sm mb-3">
+      tasks.map((task) => (
+        <div key={task.id}>
+          <div className="card border-0 shadow-sm mb-3">
             <div className="card-body d-flex justify-content-between align-items-center">
               <div>
                 <h6 className="fw-bold mb-1">{task.title}</h6>
@@ -36,7 +37,17 @@ function App() {
               </div>
             </div>
           </div>
-        ))
+          <div className="card mb-4 border-0 shadow-sm bg-dark text-white">
+            <div className="card-body">
+    <h6>Criar Nova Categoria</h6>
+    <div className="input-group">
+      <input type="text" className="form-control form-control-sm" placeholder="Ex: Faculdade" />
+      <button className="btn btn-primary btn-sm">Salvar</button>
+    </div>
+  </div>
+</div>
+        </div>
+      ))
       ) : (
         <p className="text-center">Nenhuma Tarefa encontrada no banco, Adicione algo via Adminer.</p>
       )}
