@@ -9,6 +9,23 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [activeTab, setActiveTab] = useState("tasks");
+  
+  // 🌗 ESTADO DO TEMA
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'light';
+  });
+
+  // 🌗 APLICA O TEMA AO CARREGAR
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  // 🌗 ALTERNA TEMA
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   useEffect(() => { 
     fetchTasks();
@@ -23,12 +40,11 @@ function App() {
         const categoriesRes = await axios.get("http://localhost:8080/api/categories");
         setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
       } catch (catError) {
-        console.warn("⚠️ Endpoint de categorias não encontrado.");
+        console.warn("Endpoint de categorias não encontrado");
         setCategories([]);
       }
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
-      alert("Não foi possível conectar ao backend.");
     } finally {
       setLoading(false);
     }
@@ -47,7 +63,6 @@ function App() {
       setNewTaskTitle("");
     } catch (error) {
       console.error("Erro ao criar tarefa:", error);
-      alert("Não foi possível criar a tarefa.");
     }
   };
 
@@ -64,7 +79,6 @@ function App() {
       setNewCategoryName("");
     } catch (error) {
       console.error("Erro ao criar categoria:", error);
-      alert("Não foi possível criar categoria.");
     }
   };
 
@@ -75,7 +89,6 @@ function App() {
         task.id === id ? { ...task, completed: !task.completed } : task
       ));
     } catch (error) {
-      console.error("Erro ao atualizar:", error);
       setTasks(prev => prev.map(task => 
         task.id === id ? { ...task, completed: !task.completed } : task
       ));
@@ -83,7 +96,7 @@ function App() {
   };
 
   const handleDeleteTask = async (id) => {
-    if (!window.confirm("Excluir?")) return;
+    if (!window.confirm("Excluir esta tarefa?")) return;
     try {
       await axios.delete(`http://localhost:8080/api/tasks/${id}`);
       setTasks(prev => prev.filter(task => task.id !== id));
@@ -96,137 +109,225 @@ function App() {
     ? tasks.filter(task => task.category?.id === selectedCategory)
     : tasks;
 
+  const completedCount = tasks.filter(t => t.completed).length;
+  const pendingCount = tasks.filter(t => !t.completed).length;
+
   if (loading) {
     return (
-      <div style={{minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'linear-gradient(135deg, #667eea, #764ba2)'}}>
-        <div style={{background:'rgba(255,255,255,0.95)', padding:'2rem', borderRadius:'16px', textAlign:'center', boxShadow:'0 8px 32px rgba(0,0,0,0.1)'}}>
-          <div style={{fontSize:'2.5rem', marginBottom:'1rem'}}>⏳</div>
-          <p>Carregando...</p>
-        </div>
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Carregando suas tarefas...</p>
       </div>
     );
   }
 
   return (
-    <div className="app-container">
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        {/* Form Categoria */}
-        <div className="glass-card">
-          <h3>📁 Nova Categoria</h3>
-          <form onSubmit={handleAddCategory}>
-            <input 
-              type="text" 
-              placeholder="Nome da categoria..."
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-              style={{width:'100%', marginBottom:'0.75rem'}}
-            />
-            <button type="submit" className="btn-primary" style={{width:'100%'}}>
-              Criar Categoria
-            </button>
-          </form>
-        </div>
-
-        {/* Lista Categorias */}
-        <div className="glass-card">
-          <h3>🏷️ Categorias</h3>
-          <div 
-            className={`category-item ${selectedCategory === null ? 'active' : ''}`}
-            onClick={() => setSelectedCategory(null)}
-            style={{cursor:'pointer', padding:'0.5rem', borderRadius:'8px', marginBottom:'0.5rem'}}
-          >
-            Todas
-          </div>
-          {categories.map(cat => (
-            <div
-              key={cat.id}
-              className={`category-item ${selectedCategory === cat.id ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
-              style={{
-                cursor:'pointer', 
-                padding:'0.5rem', 
-                borderRadius:'8px', 
-                marginBottom:'0.5rem',
-                background: selectedCategory === cat.id ? 'rgba(108, 92, 231, 0.1)' : 'transparent'
-              }}
-            >
-              <span style={{
-                display:'inline-block', 
-                width:'12px', 
-                height:'12px', 
-                borderRadius:'50%', 
-                background: cat.color || '#6c5ce7',
-                marginRight:'8px'
-              }}></span>
-              {cat.name}
+    <div className="app-wrapper">
+      {/* HEADER */}
+      <header className="modern-header">
+        <div className="header-content">
+          <div className="logo-section">
+            <div className="logo-icon">✓</div>
+            <div>
+              <h1>TaskFlow</h1>
+              <p>Organize seu dia com estilo</p>
             </div>
-          ))}
+          </div>
+          
+          {/* BOTÃO DE TEMA */}
+          <button 
+            className="theme-toggle-btn" 
+            onClick={toggleTheme}
+            aria-label="Alternar tema claro/escuro"
+            title={theme === 'light' ? 'Modo escuro' : 'Modo claro'}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
         </div>
+      </header>
 
-        {/* Form Tarefa */}
-        <div className="glass-card">
-          <h3>➕ Nova Tarefa</h3>
-          <form onSubmit={handleAddTask}>
-            <input 
-              type="text" 
-              placeholder="O que fazer?"
-              value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value)}
-              style={{width:'100%', marginBottom:'0.75rem'}}
-            />
-            <button type="submit" className="btn-primary" style={{width:'100%'}}>
-              Salvar Tarefa
+      <div className="main-layout">
+        {/* SIDEBAR */}
+        <aside className="elegant-sidebar">
+          {/* TABS DE NAVEGAÇÃO */}
+          <div className="nav-tabs">
+            <button 
+              className={`tab-btn ${activeTab === 'tasks' ? 'active' : ''}`}
+              onClick={() => setActiveTab('tasks')}
+            >
+              <span className="tab-icon">📋</span>
+              Tarefas
             </button>
-          </form>
-        </div>
-      </aside>
+            <button 
+              className={`tab-btn ${activeTab === 'categories' ? 'active' : ''}`}
+              onClick={() => setActiveTab('categories')}
+            >
+              <span className="tab-icon">🏷️</span>
+              Categorias
+            </button>
+          </div>
 
-      {/* CONTEÚDO PRINCIPAL */}
-      <main className="content">
-        <header style={{marginBottom:'24px'}}>
-          <h2 style={{fontSize:'2rem', color:'white'}}>Minhas Tasks</h2>
-          <p style={{color:'rgba(255,255,255,0.9)'}}>
-            Você tem <strong>{filteredTasks.filter(t => !t.completed).length}</strong> atividades pendentes.
-          </p>
-        </header>
-
-        {filteredTasks.length > 0 ? (
-          filteredTasks.map((task) => (
-            <div key={task.id} className="task-item shadow">
-              <div>
-                <h4 style={{margin:'0 0 8px 0'}}>{task.title}</h4>
-                <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
-                  <span className="category-tag">
-                    {task.category?.name || "Geral"}
-                  </span>
-                  <span style={{fontSize:'0.8rem', color:'var(--text-muted)'}}>
-                    {task.completed ? "Concluída" : "Pendente"}
-                  </span>
+          {activeTab === 'tasks' ? (
+            <>
+              {/* FILTRO DE CATEGORIAS */}
+              <div className="sidebar-section">
+                <h3 className="section-title">Filtrar por</h3>
+                <div className="filter-chips">
+                  <button 
+                    className={`filter-chip ${selectedCategory === null ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(null)}
+                  >
+                    Todas
+                  </button>
+                  {categories.map(cat => (
+                    <button 
+                      key={cat.id}
+                      className={`filter-chip ${selectedCategory === cat.id ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory(cat.id)}
+                    >
+                      <span 
+                        className="chip-dot" 
+                        style={{background: cat.color || '#6c5ce7'}}
+                      ></span>
+                      {cat.name}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="actions">
-                <button 
-                  style={{border:'none', background:'none', cursor:'pointer', fontSize:'1.2rem', opacity:0.7}}
-                  onClick={() => handleToggleTask(task.id)}
-                >
-                  {task.completed ? "↩️" : "✅"}
+
+              {/* NOVA TAREFA */}
+              <div className="sidebar-section">
+                <h3 className="section-title">Nova Tarefa</h3>
+                <form onSubmit={handleAddTask} className="modern-form">
+                  <input 
+                    type="text" 
+                    placeholder="O que precisa ser feito?"
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    className="modern-input"
+                  />
+                  <button type="submit" className="btn-primary-modern">
+                    <span className="btn-icon">+</span>
+                    Adicionar Tarefa
+                  </button>
+                </form>
+              </div>
+            </>
+          ) : (
+            /* NOVA CATEGORIA */
+            <div className="sidebar-section">
+              <h3 className="section-title">Nova Categoria</h3>
+              <form onSubmit={handleAddCategory} className="modern-form">
+                <input 
+                  type="text" 
+                  placeholder="Nome da categoria"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  className="modern-input"
+                />
+                <button type="submit" className="btn-primary-modern btn-secondary-modern">
+                  <span className="btn-icon">+</span>
+                  Criar Categoria
                 </button>
-                <button 
-                  style={{border:'none', background:'none', cursor:'pointer', fontSize:'1.2rem', opacity:0.7}}
-                  onClick={() => handleDeleteTask(task.id)}
-                >
-                  🗑️
-                </button>
+              </form>
+
+              {/* LISTA DE CATEGORIAS */}
+              <div className="categories-list">
+                {categories.map(cat => (
+                  <div key={cat.id} className="category-card">
+                    <div 
+                      className="category-color-indicator"
+                      style={{background: cat.color || '#6c5ce7'}}
+                    ></div>
+                    <span className="category-name">{cat.name}</span>
+                    <span className="category-count">
+                      {tasks.filter(t => t.category?.id === cat.id).length} tarefas
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
-          ))
-        ) : (
-          <div className="glass-card" style={{textAlign:'center', padding:'60px'}}>
-            <p style={{color:'var(--text-muted)'}}>🌱 Nenhuma tarefa por enquanto.</p>
+          )}
+        </aside>
+
+        {/* CONTEÚDO PRINCIPAL */}
+        <main className="main-content">
+          <div className="content-header">
+            <h2 className="content-title">
+              {selectedCategory 
+                ? categories.find(c => c.id === selectedCategory)?.name || 'Tarefas'
+                : 'Todas as Tarefas'}
+            </h2>
+            <span className="task-count-badge">
+              {filteredTasks.length} {filteredTasks.length === 1 ? 'tarefa' : 'tarefas'}
+            </span>
           </div>
-        )}
-      </main>
+
+          {/* LISTA DE TAREFAS */}
+          <div className="tasks-container">
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((task, index) => (
+                <div 
+                  key={task.id} 
+                  className={`task-card ${task.completed ? 'completed' : ''}`}
+                  style={{animationDelay: `${index * 0.05}s`}}
+                >
+                  <div className="task-checkbox-wrapper">
+                    <input 
+                      type="checkbox" 
+                      id={`task-${task.id}`}
+                      checked={task.completed}
+                      onChange={() => handleToggleTask(task.id)}
+                      className="task-checkbox"
+                    />
+                    <label htmlFor={`task-${task.id}`} className="checkbox-custom">
+                      <svg className="checkmark" viewBox="0 0 24 24">
+                        <path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/>
+                      </svg>
+                    </label>
+                  </div>
+                  
+                  <div className="task-content">
+                    <h4 className="task-title">{task.title}</h4>
+                    <div className="task-meta">
+                      {task.category && (
+                        <span 
+                          className="task-category"
+                          style={{
+                            background: `${task.category.color}20`,
+                            color: task.category.color || '#6c5ce7'
+                          }}
+                        >
+                          {task.category.name}
+                        </span>
+                      )}
+                      <span className={`task-status ${task.completed ? 'done' : 'pending'}`}>
+                        {task.completed ? 'Concluída' : 'Pendente'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button 
+                    className="btn-delete"
+                    onClick={() => handleDeleteTask(task.id)}
+                    title="Excluir tarefa"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">
+                <div className="empty-icon">📝</div>
+                <h3>Nenhuma tarefa encontrada</h3>
+                <p>Comece adicionando uma nova tarefa ao lado!</p>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
