@@ -129,8 +129,8 @@ function App() {
           <div className="logo-section">
             <div className="logo-icon">✓</div>
             <div>
-              <h1>TaskFlow</h1>
-              <p>Organize seu dia com estilo</p>
+              <h1>To Do List App</h1>
+              <p></p>
             </div>
           </div>
           
