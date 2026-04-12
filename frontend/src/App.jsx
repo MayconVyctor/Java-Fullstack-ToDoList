@@ -16,7 +16,7 @@ function App() {
     return localStorage.getItem('theme') || 'light';
   });
 
-  // Aplicar tema e salvar 
+  // Aplicar tema 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
