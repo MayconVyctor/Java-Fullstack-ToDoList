@@ -1,4 +1,4 @@
-/* ===== 🎨 TEMA CLARO (PADRÃO) ===== */
+/*Tema Claro*/
 :root {
   --bg-body: #f0f4f8;
   --bg-card: #ffffff;
@@ -19,7 +19,7 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== 🌑 TEMA ESCURO ===== */
+/*Tema dark*/
 [data-theme="dark"] {
   --bg-body: #0f172a;
   --bg-card: #1e293b;
@@ -51,7 +51,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ===== HEADER ===== */
+/* Header*/
 .app-wrapper {
   min-height: 100vh;
 }
@@ -125,7 +125,7 @@ body {
   transform: rotate(15deg) scale(1.1);
 }
 
-/* ===== LAYOUT PRINCIPAL ===== */
+/* Layout Principal */
 .main-layout {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -135,7 +135,7 @@ body {
   padding: 0 2rem;
 }
 
-/* ===== SIDEBAR ===== */
+/* Sidebar */
 .elegant-sidebar {
   display: flex;
   flex-direction: column;
@@ -195,7 +195,7 @@ body {
   margin-bottom: 1rem;
 }
 
-/* ===== FILTROS ===== */
+/* Filtros */
 .filter-chips {
   display: flex;
   flex-direction: column;
@@ -235,7 +235,7 @@ body {
   border-radius: 50%;
 }
 
-/* ===== FORMULÁRIOS ===== */
+/*Formularios*/
 .modern-form {
   display: flex;
   flex-direction: column;
@@ -295,7 +295,7 @@ body {
   font-weight: 300;
 }
 
-/* ===== LISTA DE CATEGORIAS ===== */
+/* Lista de Categorias */
 .categories-list {
   margin-top: 1rem;
   display: flex;
@@ -338,7 +338,7 @@ body {
   color: var(--text-muted);
 }
 
-/* ===== CONTEÚDO PRINCIPAL ===== */
+/* Conteúdo Principal */
 .main-content {
   display: flex;
   flex-direction: column;
@@ -368,7 +368,7 @@ body {
   border: 1px solid var(--border-color);
 }
 
-/* ===== CARDS DE TAREFAS ===== */
+/* Cards de Tarefas*/
 .tasks-container {
   display: flex;
   flex-direction: column;
@@ -411,7 +411,7 @@ body {
   background: rgba(16, 185, 129, 0.05);
 }
 
-/* ===== CHECKBOX CUSTOMIZADO ===== */
+/* Checkbox */
 .task-checkbox-wrapper {
   position: relative;
   flex-shrink: 0;
@@ -459,7 +459,7 @@ body {
   transform: scale(1);
 }
 
-/* ===== CONTEÚDO DA TAREFA ===== */
+/* Conteúdo da Tarefa */
 .task-content {
   flex: 1;
   min-width: 0;
@@ -509,7 +509,7 @@ body {
   color: var(--success);
 }
 
-/* ===== BOTÃO DELETAR ===== */
+/* Botao Deletar*/
 .btn-delete {
   display: flex;
   align-items: center;
@@ -534,7 +534,7 @@ body {
   color: var(--danger);
 }
 
-/* ===== ESTADO VAZIO ===== */
+/*  */
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;
@@ -560,7 +560,7 @@ body {
   color: var(--text-secondary);
 }
 
-/* ===== LOADING ===== */
+/* Loading */
 .loading-screen {
   min-height: 100vh;
   display: flex;
@@ -585,7 +585,7 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* ===== SCROLLBAR ===== */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -603,7 +603,7 @@ body {
   background: var(--text-secondary);
 }
 
-/* ===== RESPONSIVIDADE ===== */
+/* Responsividade */
 @media (max-width: 968px) {
   .main-layout {
     grid-template-columns: 1fr;

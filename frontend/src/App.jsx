@@ -11,18 +11,18 @@ function App() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [activeTab, setActiveTab] = useState("tasks");
   
-  // 🌗 ESTADO DO TEMA
+  // Estado para tema (claro/dark)
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
 
-  // 🌗 APLICA O TEMA AO CARREGAR
+  // Aplicar tema e salvar 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  // 🌗 ALTERNA TEMA
+  // Alternar tema
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
