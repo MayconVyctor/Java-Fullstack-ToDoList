@@ -603,7 +603,7 @@ body {
   background: var(--text-secondary);
 }
 
-/* Responsividade */
+
 @media (max-width: 968px) {
   .main-layout {
     grid-template-columns: 1fr;
